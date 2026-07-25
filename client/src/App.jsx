@@ -1,6 +1,5 @@
 import { useState } from "react";
 import api from "./services/api";
-import "./App.css";
 
 function App() {
   const [originalUrl, setOriginalUrl] = useState("");
@@ -10,55 +9,73 @@ function App() {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    if (!originalUrl) {
-      alert("Lütfen bir URL giriniz.");
-      return;
-    }
+    if (!originalUrl) return;
 
     try {
       setLoading(true);
 
-      const response = await api.post("/links", {
+      const res = await api.post("/links", {
         originalUrl,
       });
 
-      const code = response.data.data.shortCode;
-
-      setShortUrl(`http://localhost:5000/${code}`);
-    } catch (error) {
-      console.error(error);
-      alert("Bir hata oluştu.");
+      setShortUrl(`http://localhost:5000/${res.data.data.shortCode}`);
+    } catch (err) {
+      alert("An error occurred.");
     } finally {
       setLoading(false);
     }
   };
 
   return (
-    <div className="container">
-      <h1>🔗 Link Shortener</h1>
+    <div className="min-h-screen bg-slate-100 flex items-center justify-center p-6">
+      <div className="w-full max-w-xl bg-white rounded-2xl shadow-xl p-8">
 
-      <form onSubmit={handleSubmit}>
-        <input
-          type="text"
-          placeholder="https://example.com"
-          value={originalUrl}
-          onChange={(e) => setOriginalUrl(e.target.value)}
-        />
+        <h1 className="text-4xl font-bold text-center text-blue-600">
+          🔗 Link Shortener
+        </h1>
 
-        <button type="submit" disabled={loading}>
-          {loading ? "Oluşturuluyor..." : "Linki Kısalt"}
-        </button>
-      </form>
+        <p className="text-center text-gray-500 mt-2 mb-8">
+          Short your long URLs in a snap! Just paste your link below and click the button to get a shortened version.
+        </p>
 
-      {shortUrl && (
-        <div className="result">
-          <h3>Kısa Link</h3>
+        <form onSubmit={handleSubmit} className="space-y-4">
 
-          <a href={shortUrl} target="_blank" rel="noreferrer">
-            {shortUrl}
-          </a>
-        </div>
-      )}
+          <input
+            type="text"
+            placeholder="https://example.com"
+            value={originalUrl}
+            onChange={(e) => setOriginalUrl(e.target.value)}
+            className="w-full border rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-blue-500"
+          />
+
+          <button
+            className="w-full bg-blue-600 hover:bg-blue-700 text-white py-3 rounded-lg transition"
+          >
+            {loading ? "Creating..." : "Shorten Link"}
+          </button>
+
+        </form>
+
+        {shortUrl && (
+          <div className="mt-8 bg-slate-100 rounded-lg p-4">
+
+            <h2 className="font-semibold mb-2">
+              ✅ Short Link
+            </h2>
+
+            <a
+              href={shortUrl}
+              target="_blank"
+              rel="noreferrer"
+              className="text-blue-600 break-all"
+            >
+              {shortUrl}
+            </a>
+
+          </div>
+        )}
+
+      </div>
     </div>
   );
 }
