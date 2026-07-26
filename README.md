@@ -39,3 +39,10 @@ cd client
 npm install
 npm run dev
 ```
+# Live Demo
+
+Frontend:
+link-shortener-efeweb.vercel.app
+
+Backend API:
+https://link-shortener-api-z6yx.onrender.com
